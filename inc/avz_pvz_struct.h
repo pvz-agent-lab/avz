@@ -160,9 +160,32 @@ public:
         return MRef<double>(0x490);
     }
 
-    // MJ 时钟
+    // MJ 时钟（候选反编译中的 LawnApp::mAppCounter）
+    // 镜像里的写入点是 0x4526e6，内容为 add dword ptr [edi + 0x838], ebp
     __ANodiscard int& MjClock() noexcept {
         return MRef<int>(0x838);
+    }
+
+    // App 更新计数（候选反编译中的 LawnApp::mUpdateCount）
+    // 游戏每完成一次整体刷新自增一次，原版演示的时基也由它派生
+    // 镜像里的写入点是 0x44ec2a（构造函数置零），读取点在 0x54ec60（计算更新间隔）
+    __ANodiscard int& AppUpdateCount() noexcept {
+        return MRef<int>(0x484);
+    }
+
+    // 写入 MJ 时钟，返回实际读回值
+    // 写入必须发生在游戏线程上，返回值是真实读回值，写入未生效时不做任何修正
+    __ANodiscard int WriteMjClock(int value) noexcept {
+        volatile int& clock = MjClock();
+        clock = value;
+        return clock;
+    }
+
+    // 写入 App 更新计数，返回实际读回值
+    __ANodiscard int WriteAppUpdateCount(int value) noexcept {
+        volatile int& count = AppUpdateCount();
+        count = value;
+        return count;
     }
 
     __ANodiscard HWND& Hwnd() noexcept {

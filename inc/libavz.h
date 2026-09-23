@@ -17,6 +17,7 @@
 #include "avz_iterator.h"
 #include "avz_memory.h"
 #include "avz_replay.h"
+#include "avz_rng.h"
 #include "avz_script.h"
 #include "avz_seh.h"
 #include "avz_smart.h"
