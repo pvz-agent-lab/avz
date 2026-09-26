@@ -6,6 +6,10 @@ AvZ 操作精度为理论上的绝对精准，使用这套框架将再也不用�
 
 本项目使用 [VSCode](https://code.visualstudio.com/) + LLVM-MinGW 进行代码编辑、编译和注入。
 
+> 组织维护说明：本仓库 `pvz-agent-lab/avz` 是上游的薄 fork。上游来源、版本 pin、补丁差异表与 L1 归属决策见 [`docs/lvz/`](docs/lvz/README.md)；本 README 与 `LICENSE` 保持上游原文，治理文档不改动上游内容。
+
+> 注：上游 `.gitignore` 忽略 `/docs/`，本目录文件以 `git add -f` 强制跟踪；新增文件同样需要 `-f`（见 [`docs/lvz/upstream-and-pins.md`](docs/lvz/upstream-and-pins.md) §3、§8）。
+
 ## 使用
 
 请转到教程的目录：[GitLab](https://gitlab.com/vector-wlc/AsmVsZombies/blob/master/tutorial/00_catalogue.md) / [GitHub](https://github.com/vector-wlc/AsmVsZombies/blob/master/tutorial/00_catalogue.md) / [Gitee](https://gitee.com/vector-wlc/AsmVsZombies/blob/master/tutorial/00_catalogue.md)
