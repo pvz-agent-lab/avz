@@ -87,7 +87,7 @@
 
 ### 5.2 消费方采用/升级（组织 fork 消费 SHA）
 
-**当前状态：已审查消费方未采用（范围见 §4）。** 旧仓是 pristine 子模块 `c42676c` + 构建期 overlay；§8 第 4 步记录的采用尚未执行。
+**当前状态：已审查消费方未采用（范围见 §4）。** 旧仓是 pristine 子模块 `c42676c` + 构建期 overlay；§8 第 4 步记录的采用尚未执行。本文档的 review/合并只确认归属与流程记录，**不构成对候选 fork 消费 SHA 的生产等价通过**；实际采用仍需本节与 5.1 列出的等价验收门槛。
 
 将来采用时，一次变更同时更新六处，不允许 URL 指向 A、pin 指向 B：
 
@@ -98,13 +98,15 @@
 | 3 | 源码 pin | 子模块 gitlink + `avz_commit` = `c42676c`（上游基线） | 组织 fork 消费 SHA（当前为 `e266e18`；新补丁需新 review 与新 SHA） |
 | 4 | 锁文件 | `avz_runtime_release` 等字段 | 与实际采用的 fork SHA/版本一致 |
 | 5 | overlay/补丁清单 | 6 项守卫 + 11 处替换，F 项未采用 | 守卫与锚点按采用后源码复算；[patch-registry.md](patch-registry.md) 把 F 项改为"主仓采用"并重审 O 项去留 |
-| 6 | 构建/运行 manifest | 运行 manifest 绑定实际 `recorder_sha256` 与脚本摘要 | 必须来自采用后的同一构建；audit manifest 的能力声明不得超出实际源码 |
+| 6 | 构建/运行 manifest（仅新构建/新运行） | 运行 manifest 绑定实际 `recorder_sha256` 与脚本摘要 | 必须来自采用后的同一构建；audit manifest 的能力声明不得超出实际源码。只更新新生成的 manifest，**不修改既有归档 manifest/seal/报告** |
 
 采用时还必须保留等价验收：对照 `determinism/evidence.json` 的签名/布局与 fork 自检，跑 5.1 第 3 条的离线测试；涉及帧/RNG/加载路径的附绑定构建哈希的真机报告（如适用）。未运行不得写等价。
 
+六处变更中的第 6 项只指采用后**新构建、新运行**生成的身份与能力声明；既有运行归档、manifest、seal 与报告保持不可变，不在采用/升级中改写。
+
 ### 5.3 回退
 
-回退是 5.2 的逆操作，同样要六处一致：恢复来源 URL、子模块 URL、pin/`avz_commit`、锁文件其余字段、overlay 守卫与锚点、构建/运行 manifest 的来源声明；禁止只改 pin 不改 URL/manifest，或相反。
+回退是 5.2 的逆操作，同样要六处一致：恢复来源 URL、子模块 URL、pin/`avz_commit`、锁文件其余字段、overlay 守卫与锚点，并按回退后的源码**重新构建、创建新的运行证据**（新的 manifest 身份/能力声明）；既有归档 manifest、seal、报告保持不可变，禁止改写历史证据；禁止只改 pin 不改 URL/manifest，或相反。
 
 ## 6. 回退的报告与守卫
 

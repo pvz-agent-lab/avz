@@ -177,7 +177,7 @@
 - 理由：托管脚本的炮击是直接引擎调用，不进请求 journal；只补审计、不改语义（引擎调用次数/参数/顺序逐字节保持）。
 - 归属：env（审计流格式与绑定规则）。
 - 已有验证（历史记录）：离线 `avz_hosted_fire`（overlay + 真记录路径，与默认构建的引擎调用轨迹逐字节相同）、`avz_hosted_fire_default`（0 条记录）、`test_hosted_fire_audit.py`（声明/绑定/计数/digest/顺序负例与跨语言 digest 对账）；代码 [PR #89](https://github.com/guajun/llm-vs-zombies/pull/89)（`9b00d703`）、digest 对账修复 [PR #92](https://github.com/guajun/llm-vs-zombies/pull/92)（`40893d76`）。真机：2026-09-24 `jd12-smoke-01-s42-c0` 20 条炮击记录确认落盘并暴露 id ≥ 2^31 的 digest 混合缺陷（修复前证据被读取端有意拒绝）；修复后的真机端到端由 #99 运行提供——PR #107（`346e495a`）的 `issue99-jd12r` 四条轨迹每条 4 条 `hosted_fire`（tick 567、1168 各两发）、同分支原跑=复跑（`docs/issue99-铲子同根分叉.md` §6/§8）；旧仓 #101 整改矩阵（[PR #119](https://github.com/guajun/llm-vs-zombies/pull/119)，OPEN）R14/R15 复核了 `hosted_fire_count=4`/条与复跑，并记录正式 `fc2` 树 `ce770e531a225234b53ac3b810bc3209e4417b257410605f105bc38b0bc90220`（`experiments/trees/issue99-fc2-shovel-fork`、seal `work/issue99-fc2-seal.json`，只读校验见 trajectory-core [PR #2](https://github.com/pvz-agent-lab/trajectory-core/pull/2) `afb770ee`）。真机结论以绑定构建哈希的运行 manifest 为准。
-- 缺失验证：本治理任务未重跑真机/离线（历史证据如上，不是"未做"）；托管炮击仍不是一等 `fire` 动作（无 request journal/不可重放），属协议扩展议题。
+- 缺失验证：本治理任务未重跑真机/离线（历史证据如上，不是"未做"）。语义边界：`hosted_fire` 是审计日志，**不能作为一等请求动作再次提交**——冷重放通过重新执行托管脚本产生炮击，并用审计记录校验每次发炮，不能同时重放日志而重复发炮。把托管炮击变成可重放的一等 `fire` 动作（request journal/协议扩展）不在 #84 原文范围。
 - 上游提交：否（env 专用）。
 
 ---
